@@ -142,4 +142,69 @@ const ASSET_COLOR = {
   TLT: "#9b8cff",
 };
 
-window.ATOMS = { fmtNum, fmtPrice, fmtPct, fmtZ, fmtCcy, zColor, deltaColor, Spark, ZMeter, RangeBar, ASSET_COLOR };
+// Collapsible help panel — Japanese explanation for each tab/section
+function HelpPanel({ id, title = "このタブの読み方", children, defaultOpen = true }) {
+  const key = `souba-help-${id}`;
+  const [open, setOpen] = useState(() => {
+    try {
+      const v = localStorage.getItem(key);
+      if (v === null) return defaultOpen;
+      return v === "1";
+    } catch { return defaultOpen; }
+  });
+  const toggle = () => setOpen((o) => {
+    const n = !o;
+    try { localStorage.setItem(key, n ? "1" : "0"); } catch {}
+    return n;
+  });
+  return (
+    <div className="panel mb-4" style={{ borderColor: "rgba(0, 212, 255, 0.25)" }}>
+      <button onClick={toggle}
+              className="w-full flex items-center justify-between px-5 py-2.5"
+              style={{ background: open ? "rgba(0, 212, 255, 0.04)" : "transparent" }}>
+        <div className="flex items-center gap-3">
+          <span className="label-xs" style={{ color: "var(--info)" }}>HELP</span>
+          <span style={{
+            fontFamily: "Noto Sans JP, system-ui",
+            fontSize: 12,
+            color: "var(--text-1)",
+            letterSpacing: "0.02em",
+          }}>{title}</span>
+        </div>
+        <span className="mono" style={{ color: "var(--text-2)", fontSize: 11 }}>{open ? "▾ 閉じる" : "▸ 開く"}</span>
+      </button>
+      {open && (
+        <div className="px-5 pb-5 pt-3"
+             style={{
+               fontFamily: "Noto Sans JP, system-ui",
+               fontSize: 12.5,
+               lineHeight: 1.85,
+               color: "var(--text-1)",
+               borderTop: "1px solid var(--grid)",
+             }}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Short inline hint shown under section headers — single sentence in Japanese
+function SectionHint({ children }) {
+  return (
+    <div style={{
+      fontFamily: "Noto Sans JP, system-ui",
+      fontSize: 11,
+      color: "var(--text-2)",
+      letterSpacing: "0.02em",
+      lineHeight: 1.5,
+    }}>{children}</div>
+  );
+}
+
+// Re-usable highlight span for keywords in help text
+function HK({ children, color = "var(--text-0)" }) {
+  return <span style={{ color, fontWeight: 600 }}>{children}</span>;
+}
+
+window.ATOMS = { fmtNum, fmtPrice, fmtPct, fmtZ, fmtCcy, zColor, deltaColor, Spark, ZMeter, RangeBar, ASSET_COLOR, HelpPanel, SectionHint, HK };

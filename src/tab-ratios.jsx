@@ -1,5 +1,5 @@
 // ===== Tab 4: 比率 =====
-const { fmtNum: f4, fmtZ: fz4, ASSET_COLOR: AC4 } = window.ATOMS;
+const { fmtNum: f4, fmtZ: fz4, ASSET_COLOR: AC4, HelpPanel: HP4, HK: HK4 } = window.ATOMS;
 
 function TabRatios() {
   const [pinned, setPinned] = React.useState([
@@ -19,6 +19,33 @@ function TabRatios() {
 
   return (
     <div className="tab-pane">
+      <HP4 id="ratio" title="比率タブの読み方 — 2資産の「相対的な割安 / 割高」を見る">
+        <p className="mb-2">
+          1資産を単独で見るのではなく、<HK4>2つの資産の比率 (例: NDX ÷ GLD)</HK4> をチャート化することで、
+          「どっちが相対的に割高 / 割安か」を可視化するページです。
+          推奨タブの結果と矛盾していないかの確認や、ペアトレードのアイデア出しに使います。
+        </p>
+        <p className="mb-2">
+          <HK4>■ 例: NDX / GLD の読み方</HK4><br/>
+          NDX (NASDAQ100) ÷ GLD (Gold ETF) の比率を時系列でプロット。<br/>
+          ・比率が長期平均より<HK4 color="var(--sell)">大きく上</HK4> → 株がGoldに対して<HK4 color="var(--sell)">割高</HK4> (=Gold逃避タイミングのサイン)<br/>
+          ・比率が長期平均より<HK4 color="var(--buy)">大きく下</HK4> → 株がGoldに対して<HK4 color="var(--buy)">割安</HK4> (=株拾いどき)<br/>
+          Z-scoreが <HK4>±1σ</HK4> を超えていれば「歴史的にレアな水準」のサイン。
+        </p>
+        <p className="mb-2">
+          <HK4>■ 上のボタン</HK4><br/>
+          <HK4>PINNED PAIRS</HK4> = よく見るペアのショートカット。
+          <HK4>CUSTOM</HK4> プルダウンで分子 / 分母を自由に選び、12通りのペアを切替可能。
+        </p>
+        <p>
+          <HK4>■ 右の PAIR Z-SCORE MATRIX</HK4><br/>
+          全ペアの現在のZ-scoreを一覧表示するヒートマップ。<br/>
+          行 = 分子、列 = 分母。<HK4 color="var(--buy)">緑が濃い</HK4>ほど「行資産が列資産に対して割安」、
+          <HK4 color="var(--sell)">赤が濃い</HK4>ほど割高。<br/>
+          セルをクリックでメインチャートが切り替わります。極端な色のセルが「いま面白いペア」。
+        </p>
+      </HP4>
+
       {/* Top controls */}
       <div className="panel mb-4 px-5 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">

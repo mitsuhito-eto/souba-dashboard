@@ -68,22 +68,22 @@ function App() {
         </div>
 
         <div className="px-6 h-8 flex items-center gap-6 text-xs" style={{ borderTop: "1px solid var(--grid)", background: "var(--bg-0)" }}>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" title="今日の推奨買い対象 (Z-score下位2資産を50/50で買う)">
             <span className="label-xs">TODAY'S BUY</span>
             <span className="mono font-bold" style={{ color: "var(--buy)", fontSize: 12 }}>{buys}</span>
             <span className="label-xs">· 50/50</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" title="現在のマクロ環境ラベル (CPIと失業率トレンドから簡易推定)">
             <span className="label-xs">REGIME</span>
             <span className="mono" style={{ color: "var(--warn)", fontSize: 11 }}>{regimeLabel}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" title="BTC=デジタルゴールド仮説の状態。INTACT=Gold相関がNASDAQ相関より十分高い、BREAKING=テック株化している">
             <span className="label-xs">BTC HYP</span>
             <span className="mono" style={{ color: window.DATA.BTC_HYPOTHESIS.intact ? "var(--buy)" : "var(--warn)", fontSize: 11 }}>
               {window.DATA.BTC_HYPOTHESIS.intact ? "INTACT" : "BREAKING"}
             </span>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2" title="ドル円レート (Yahoo Finance JPY=X、価格表示のJPY換算に使用)">
             <span className="label-xs">USD/JPY</span>
             <span className="mono text-d0" style={{ fontSize: 11 }}>{window.DATA.FX_USDJPY.toFixed(2)}</span>
           </div>

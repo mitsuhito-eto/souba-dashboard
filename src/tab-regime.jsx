@@ -1,5 +1,5 @@
 // ===== Tab 3: レジーム =====
-const { fmtNum: f3, fmtPct: fpc3, Spark: Spark3, RangeBar: RangeBar3, ASSET_COLOR: AC3 } = window.ATOMS;
+const { fmtNum: f3, fmtPct: fpc3, Spark: Spark3, RangeBar: RangeBar3, ASSET_COLOR: AC3, HelpPanel: HP3, SectionHint: SH3, HK: HK3 } = window.ATOMS;
 
 function TabRegime({ ccy }) {
   const macro = window.DATA.MACRO;
@@ -8,6 +8,40 @@ function TabRegime({ ccy }) {
 
   return (
     <div className="tab-pane">
+      <HP3 id="regime" title="レジームタブの読み方 — 「いま買って大丈夫な相場環境か」のサニティチェック">
+        <p className="mb-2">
+          推奨ロジック (Z-score) そのものはマクロ経済を使いません。
+          このタブは別軸で<HK3>「今は景気サイクルのどこにいるのか」「インフレ環境はどうか」</HK3>を確認するためのページ。
+          推奨と現実の温度感がズレていないかをチェックします。
+        </p>
+        <p className="mb-2">
+          <HK3>■ 上段 マクロ6指標の意味</HK3><br/>
+          ・<HK3>Real Yield (米10年実質金利)</HK3> = 名目金利−インフレ期待。<HK3>プラスが大きい</HK3>と現金/債券に有利、株/Goldに不利。<HK3>マイナス</HK3>はその逆<br/>
+          ・<HK3>Yield Curve (10Y−2Y)</HK3> = 長短金利差。<HK3 color="var(--sell)">マイナス (逆イールド)</HK3> は景気後退の前兆として有名<br/>
+          ・<HK3>M2 YoY</HK3> = マネー供給量の前年比。<HK3 color="var(--buy)">高い</HK3>ほどリスク資産に追い風<br/>
+          ・<HK3>VIX</HK3> = 株式市場の恐怖指数。<HK3>20超</HK3>で警戒、<HK3 color="var(--sell)">30超</HK3>でパニック相場<br/>
+          ・<HK3>CPI YoY</HK3> = インフレ率 (物価上昇率)。FRBの目標は <HK3>2%</HK3>。これ以上は引き締め継続要因<br/>
+          ・<HK3>Unemployment</HK3> = 失業率。<HK3 color="var(--sell)">上昇トレンド</HK3>は景気後退入りのシグナル<br/>
+          各カードの <HK3 color="var(--info)">青い縦バー</HK3> = 過去5年レンジの中で「現在値」がどこにいるか。
+          スパークラインは過去の推移、緑/赤は前月比。
+        </p>
+        <p className="mb-2">
+          <HK3>■ 中段 ABSOLUTE VALUATION</HK3><br/>
+          4資産それぞれを「絶対的に高いか安いか」だけで見るカード。
+          <HK3 color="var(--sell)">rich (赤)</HK3> = 過熱、<HK3 color="var(--buy)">cheap (緑)</HK3> = 割安、<HK3>neutral</HK3> = 普通。<br/>
+          BTCの <HK3>Mayer Multiple</HK3> = 価格 ÷ 200週MA。
+          1.5以上で過熱、0.8以下で割安、というBTC界隈の古典的な指標。
+        </p>
+        <p>
+          <HK3>■ 下段 BTC = DIGITAL GOLD?</HK3><br/>
+          BTCがゴールドに似た動きをしているか (=「デジタル・ゴールド」仮説) を90日相関で検証するパネル。<br/>
+          <HK3 color="#ffd700">Gold相関</HK3> − <HK3 color="#00d4ff">NASDAQ相関</HK3> ≧ 0.10 →
+          <HK3 color="var(--buy)">INTACT</HK3> (Gold寄り、デジタルゴールドとして機能している)<br/>
+          逆転 → <HK3 color="var(--warn)">BREAKING</HK3> (テック株寄り、単なるリスク資産として扱うべき)。
+          <br/>これが BREAKING に転じたときは、BTCの位置付けを見直すきっかけになります。
+        </p>
+      </HP3>
+
       {/* Top: Macro 6 + regime badge */}
       <div className="grid grid-cols-12 gap-4 mb-4">
         <div className="col-span-9 grid grid-cols-3 gap-px panel" style={{ background: "var(--grid)" }}>
@@ -39,9 +73,14 @@ function TabRegime({ ccy }) {
 
       {/* Mid: Absolute valuation per asset */}
       <div className="panel mb-4">
-        <div className="px-5 py-3 border-b divider flex items-baseline justify-between">
-          <div className="label-xs" style={{ color: "var(--text-0)" }}>ABSOLUTE VALUATION · PER ASSET</div>
-          <div className="label-xs">2026-04-25</div>
+        <div className="px-5 py-3 border-b divider">
+          <div className="flex items-baseline justify-between">
+            <div className="label-xs" style={{ color: "var(--text-0)" }}>ABSOLUTE VALUATION · PER ASSET</div>
+            <div className="label-xs">2026-04-25</div>
+          </div>
+          <div className="mt-1.5">
+            <SH3>各資産を「絶対的に割高 / 割安か」で見るカード。<span style={{color:"var(--sell)"}}>rich</span>=過熱、<span style={{color:"var(--buy)"}}>cheap</span>=割安、neutral=普通。</SH3>
+          </div>
         </div>
         <div className="grid grid-cols-4 gap-px" style={{ background: "var(--grid)" }}>
           {window.DATA.ASSETS.map((a) => {
@@ -76,16 +115,21 @@ function TabRegime({ ccy }) {
         borderColor: hyp.intact ? "var(--grid)" : "rgba(255, 215, 0, 0.5)",
         boxShadow: hyp.intact ? "none" : "0 0 0 1px rgba(255,215,0,0.3) inset",
       }}>
-        <div className="px-5 py-3 border-b divider flex items-baseline justify-between">
-          <div className="flex items-center gap-3">
-            <div className="label-xs" style={{ color: hyp.intact ? "var(--text-0)" : "var(--warn)" }}>
-              HYPOTHESIS · "BTC = DIGITAL GOLD?"
+        <div className="px-5 py-3 border-b divider">
+          <div className="flex items-baseline justify-between">
+            <div className="flex items-center gap-3">
+              <div className="label-xs" style={{ color: hyp.intact ? "var(--text-0)" : "var(--warn)" }}>
+                HYPOTHESIS · "BTC = DIGITAL GOLD?"
+              </div>
+              {!hyp.intact && (
+                <span className="label-xs" style={{ color: "var(--warn)" }}>⚠ 仮説が崩れている可能性</span>
+              )}
             </div>
-            {!hyp.intact && (
-              <span className="label-xs" style={{ color: "var(--warn)" }}>⚠ 仮説が崩れている可能性</span>
-            )}
+            <div className="label-xs">90日ローリング相関</div>
           </div>
-          <div className="label-xs">90日ローリング相関</div>
+          <div className="mt-1.5">
+            <SH3>BTCがGoldとNASDAQのどちらに似た動きをしているか比較。Gold相関 &gt; NASDAQ相関 なら「デジタルゴールド」仮説 INTACT。</SH3>
+          </div>
         </div>
         <div className="grid grid-cols-12 gap-4 p-5">
           <div className="col-span-4 flex flex-col">

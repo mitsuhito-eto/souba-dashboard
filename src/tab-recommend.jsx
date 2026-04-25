@@ -1,5 +1,5 @@
 // ===== Tab 1: 推奨 =====
-const { fmtNum: f1, fmtPrice: fp1, fmtPct: fpc1, fmtZ: fz1, fmtCcy: fc1, ZMeter: ZMeter1, ASSET_COLOR: AC1 } = window.ATOMS;
+const { fmtNum: f1, fmtPrice: fp1, fmtPct: fpc1, fmtZ: fz1, fmtCcy: fc1, ZMeter: ZMeter1, ASSET_COLOR: AC1, HelpPanel: HP1, SectionHint: SH1, HK: HK1 } = window.ATOMS;
 
 function TabRecommend({ ccy }) {
   const fx = window.DATA.FX_USDJPY;
@@ -9,6 +9,32 @@ function TabRecommend({ ccy }) {
 
   return (
     <div className="tab-pane">
+      {/* HELP */}
+      <HP1 id="rec" title="推奨タブの読み方 — このページで何が分かるか">
+        <p className="mb-2">
+          <HK1>「次の1万円〜10万円をどう振り分けるか」</HK1>を一目で出すページです。
+          4資産 (NASDAQ100 / Gold / BTC / TLT) の中から、いま<HK1 color="var(--buy)">最も割安な2つ</HK1>を 50 / 50 で買う、というルールベースの推奨です。
+          キャッシュを温存せず、常にどれかに資金を入れる前提 (=「キャッシュはゴミ」哲学)。
+        </p>
+        <p className="mb-2">
+          <HK1>■ 上段 TODAY'S ALLOCATION</HK1><br/>
+          ドーナツ + 緑の2タイル = 今日の買い対象。グレーアウト2つは「今日は何もしない (HOLD)」。
+          z-score の数字が小さい (=マイナスが大きい) ほど割安と判定されます。
+        </p>
+        <p className="mb-2">
+          <HK1>■ 中段 Z-SCORE METER</HK1><br/>
+          各資産が「過去200週 (約4年) の平均」からどれだけ離れているかを <HK1>σ (標準偏差)</HK1> で測ったもの。
+          <HK1 color="var(--buy)">−2σ以下</HK1> は歴史的に激安ゾーン、<HK1>0付近</HK1> が普通、
+          <HK1 color="var(--sell)">+2σ以上</HK1> は過熱ゾーン。
+          青いバーが左に寄っているほど買い候補。SIGNAL欄の<HK1 color="var(--buy)">▲ BUY</HK1>に従えばOK。
+        </p>
+        <p>
+          <HK1>■ 下段 5-YEAR PRICE THUMBNAILS</HK1><br/>
+          5年分の週次チャート (サムネイル)。中央の薄い線が <HK1>200週移動平均</HK1>、上下のバンドが <HK1>±1σ帯</HK1>。
+          価格がバンドの外に出ているときは「異常値」=極端な割高 / 割安のサインとして見ます。
+        </p>
+      </HP1>
+
       {/* TOP: TODAY'S ALLOCATION */}
       <div className="panel-hi p-6 mb-4" style={{ borderColor: "rgba(0,255,136,0.3)" }}>
         <div className="flex items-baseline justify-between mb-5">
@@ -79,10 +105,15 @@ function TabRecommend({ ccy }) {
 
       {/* MID: Z-score meters */}
       <div className="panel mb-4">
-        <div className="flex items-center justify-between px-5 py-3 border-b divider">
-          <div className="label-xs" style={{ color: "var(--text-0)" }}>Z-SCORE METER · 4 ASSETS</div>
-          <div className="label-xs" title="Z-score = (現在値 - 200週MA) ÷ 標準偏差">
-            ƒ(x) = (P − MA<sub>200w</sub>) ÷ σ
+        <div className="px-5 py-3 border-b divider">
+          <div className="flex items-center justify-between">
+            <div className="label-xs" style={{ color: "var(--text-0)" }}>Z-SCORE METER · 4 ASSETS</div>
+            <div className="label-xs" title="Z-score = (現在値 - 200週MA) ÷ 標準偏差">
+              ƒ(x) = (P − MA<sub>200w</sub>) ÷ σ
+            </div>
+          </div>
+          <div className="mt-1.5">
+            <SH1>4資産を割安順 (Z-score の小さい順) に並べたランキング。バーが左 (緑) に寄っているほど買い候補。</SH1>
           </div>
         </div>
         <div className="divide-y" style={{ borderColor: "var(--grid)" }}>
@@ -132,9 +163,14 @@ function TabRecommend({ ccy }) {
 
       {/* BOTTOM: 2x2 mini charts */}
       <div className="panel">
-        <div className="flex items-center justify-between px-5 py-3 border-b divider">
-          <div className="label-xs" style={{ color: "var(--text-0)" }}>5-YEAR PRICE · THUMBNAILS</div>
-          <div className="label-xs">200wMA + ±1σ band</div>
+        <div className="px-5 py-3 border-b divider">
+          <div className="flex items-center justify-between">
+            <div className="label-xs" style={{ color: "var(--text-0)" }}>5-YEAR PRICE · THUMBNAILS</div>
+            <div className="label-xs">200wMA + ±1σ band</div>
+          </div>
+          <div className="mt-1.5">
+            <SH1>5年週次チャート。中央の点線=200週MA、上下のバンドが ±1σ帯。バンド外に出ていれば極端な値。</SH1>
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-px" style={{ background: "var(--grid)" }}>
           {window.DATA.ASSETS.map((a) => {

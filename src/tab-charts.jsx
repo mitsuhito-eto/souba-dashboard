@@ -1,5 +1,5 @@
 // ===== Tab 2: チャート =====
-const { fmtNum: f2, fmtPct: fpc2, fmtZ: fz2, fmtCcy: fc2, ASSET_COLOR: AC2 } = window.ATOMS;
+const { fmtNum: f2, fmtPct: fpc2, fmtZ: fz2, fmtCcy: fc2, ASSET_COLOR: AC2, HelpPanel: HP2, HK: HK2 } = window.ATOMS;
 
 function TabCharts({ ccy }) {
   const [period, setPeriod] = React.useState("5Y");
@@ -9,6 +9,25 @@ function TabCharts({ ccy }) {
 
   return (
     <div className="tab-pane">
+      <HP2 id="chart" title="チャートタブの読み方 — 推奨ロジックの裏側を確認する">
+        <p className="mb-2">
+          4資産それぞれの<HK2>長期チャート</HK2>を並べて、推奨タブの判定が「直感的に妥当か」を見るためのページです。
+          上の <HK2>PERIOD</HK2> ボタンで期間切替、<HK2>LOG</HK2> で対数スケール (BTCのように指数的に動く資産で有用)。
+        </p>
+        <p className="mb-2">
+          <HK2>■ チャート上の線とバンドの意味</HK2><br/>
+          ・<HK2 color="#00d4ff">カラー実線</HK2> = 価格 (週次)<br/>
+          ・<HK2 color="#9aa3b8">グレーの点線</HK2> = 200週移動平均 (約4年の平均)。長期トレンドの「真ん中」<br/>
+          ・<HK2>色付きの薄いバンド</HK2> = ±1σ・±2σ帯。価格は通常この中で動きます。バンド外に飛び出していれば異常値<br/>
+          ・<HK2 color="#ff3366">下の赤シェード</HK2> = ドローダウン (DD)。直近高値からの下落率を視覚化したもの
+        </p>
+        <p>
+          <HK2>■ ヘッダー数値の意味</HK2><br/>
+          <HK2>LAST</HK2> = 最新価格、<HK2>1W</HK2> = 直近1週間の騰落率、<HK2>Z</HK2> = いまのZ-score (推奨タブと同じもの)。
+          <HK2 color="var(--buy)">BUYバッジ</HK2>が付いている資産は今日の推奨対象です。
+        </p>
+      </HP2>
+
       {/* Controls */}
       <div className="panel mb-4 px-5 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
