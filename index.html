@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PORTFOLIO MONITOR</title>
+<meta name="viewport" content="width=1280">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.js"></script>
+<style>
+  :root {
+    --bg-0: #0a0e1a;
+    --bg-1: #0d1117;
+    --bg-panel: #131722;
+    --bg-panel-hi: #171c2a;
+    --grid: #1a1f2e;
+    --grid-hi: #232a3d;
+    --text-0: #e6e9ef;
+    --text-1: #9aa3b8;
+    --text-2: #5b6479;
+    --text-3: #3d4458;
+    --buy: #00ff88;
+    --sell: #ff3366;
+    --info: #00d4ff;
+    --warn: #ffd700;
+    --buy-dim: rgba(0, 255, 136, 0.15);
+    --sell-dim: rgba(255, 51, 102, 0.15);
+    --info-dim: rgba(0, 212, 255, 0.15);
+    --warn-dim: rgba(255, 215, 0, 0.15);
+  }
+  html, body {
+    background: var(--bg-0);
+    color: var(--text-0);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
+    font-size: 13px;
+    min-width: 1280px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "JetBrains Mono", monospace; font-feature-settings: "tnum"; }
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--grid);
+  }
+  .panel-hi {
+    background: var(--bg-panel-hi);
+    border: 1px solid var(--grid-hi);
+  }
+  .divider { border-color: var(--grid); }
+  .tick { color: var(--text-2); }
+  .label-xs {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+  .label-sm {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--text-1);
+  }
+  .glow-buy { box-shadow: 0 0 12px rgba(0, 255, 136, 0.35), inset 0 0 0 1px rgba(0, 255, 136, 0.6); }
+  .ring-buy { outline: 1px solid #00ff88; outline-offset: -1px; }
+  .text-buy { color: var(--buy); }
+  .text-sell { color: var(--sell); }
+  .text-info { color: var(--info); }
+  .text-warn { color: var(--warn); }
+  .bg-buy { background-color: var(--buy); }
+  .bg-sell { background-color: var(--sell); }
+  .text-d0 { color: var(--text-0); }
+  .text-d1 { color: var(--text-1); }
+  .text-d2 { color: var(--text-2); }
+  .text-d3 { color: var(--text-3); }
+
+  /* segmented control */
+  .seg button {
+    border: 1px solid var(--grid);
+    color: var(--text-1);
+    background: transparent;
+    transition: all 120ms;
+  }
+  .seg button:hover { color: var(--text-0); border-color: var(--grid-hi); }
+  .seg button.on {
+    color: var(--buy);
+    border-color: rgba(0, 255, 136, 0.5);
+    background: rgba(0, 255, 136, 0.06);
+  }
+
+  /* tabs */
+  .tab {
+    color: var(--text-1);
+    border-bottom: 1px solid transparent;
+    transition: color 120ms, border-color 120ms;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+  .tab:hover { color: var(--text-0); }
+  .tab.on {
+    color: var(--buy);
+    border-color: var(--buy);
+  }
+
+  /* z-meter */
+  .zmeter-track {
+    background: linear-gradient(to right,
+      rgba(255,51,102,0.10) 0%,
+      rgba(255,51,102,0.05) 33%,
+      rgba(155,160,180,0.05) 50%,
+      rgba(0,255,136,0.05) 67%,
+      rgba(0,255,136,0.10) 100%);
+  }
+
+  /* tooltip */
+  .tip {
+    background: #0a0e1a;
+    border: 1px solid var(--grid-hi);
+    color: var(--text-0);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-0); }
+  ::-webkit-scrollbar-thumb { background: var(--grid-hi); border-radius: 0; }
+
+  /* blinking dot */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--buy);
+    animation: pulse-dot 1.6s infinite;
+  }
+
+  /* heatmap cell */
+  .hcell {
+    transition: all 120ms;
+    cursor: pointer;
+  }
+  .hcell:hover {
+    outline: 1px solid var(--text-0);
+    outline-offset: -1px;
+  }
+
+  /* tab transition */
+  .tab-pane { animation: fade 220ms ease-out; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* select */
+  select.fs {
+    appearance: none;
+    background: var(--bg-panel);
+    color: var(--text-0);
+    border: 1px solid var(--grid);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    padding: 6px 26px 6px 10px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%239aa3b8' d='M0 0l5 6 5-6z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+  }
+  select.fs:focus { outline: 1px solid var(--info); outline-offset: -1px; }
+
+  /* range badge for regime */
+  .regime-badge {
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    background: rgba(255, 215, 0, 0.06);
+    color: var(--warn);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 6px 12px;
+  }
+
+  /* sparkline svg */
+  .spark path { fill: none; stroke-width: 1.25; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="src/data.jsx"></script>
+<script type="text/babel" src="src/atoms.jsx"></script>
+<script type="text/babel" src="src/charts.jsx"></script>
+<script type="text/babel" src="src/tab-recommend.jsx"></script>
+<script type="text/babel" src="src/tab-charts.jsx"></script>
+<script type="text/babel" src="src/tab-regime.jsx"></script>
+<script type="text/babel" src="src/tab-ratios.jsx"></script>
+<script type="text/babel" src="src/app.jsx"></script>
+</body>
+</html>

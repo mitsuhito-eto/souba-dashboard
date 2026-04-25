@@ -1,0 +1,15 @@
+{
+  "name": "souba-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Personal long-term investment dashboard (NDX / Gold / BTC / TLT)",
+  "scripts": {
+    "fetch": "node scripts/fetch-data.mjs",
+    "serve": "npx --yes http-server@14 -c-1 -p 5173 .",
+    "dev": "npm run serve"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
